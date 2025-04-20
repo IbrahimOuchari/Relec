@@ -512,6 +512,45 @@ class StockInvoiceOnshipping(models.TransientModel):
         """
         return self.env["account.move"].create(invoice_values)
 
+    # def _action_generate_invoices(self):
+    #     """
+    #     Action to generate invoices based on pickings
+    #     :return: account.move recordset
+    #     """
+    #     pickings = self._load_pickings()
+    #     company = pickings.mapped("company_id")
+    #     if company and company != self.env.user.company_id:
+    #         raise UserError(_("All pickings are not related to your company!"))
+    #     pick_list = self._group_pickings(pickings)
+    #     invoices = self.env["account.move"].browse()
+    #     for pickings in pick_list:
+    #         moves = pickings.mapped("move_lines")
+    #         grouped_moves_list = self._group_moves(moves)
+    #         parts = self.ungroup_moves(grouped_moves_list)
+    #         for moves_list in parts:
+    #             invoice, invoice_values = self._build_invoice_values_from_pickings(
+    #                 pickings
+    #             )
+    #             lines = [(5, 0, {})]
+    #             line_values = False
+    #             for moves in moves_list:
+    #                 line_values = self._get_invoice_line_values(
+    #                     moves, invoice_values, invoice
+    #                 )
+    #                 if line_values:
+    #                     lines.append((0, 0, line_values))
+    #             if line_values:  # Only create the invoice if it has lines
+    #                 invoice_values["invoice_line_ids"] = lines
+    #                 invoice_values["invoice_date"] = self.invoice_date
+    #                 # this is needed otherwise invoice_line_ids are removed
+    #                 # in _move_autocomplete_invoice_lines_create
+    #                 # and no invoice line is created
+    #                 invoice_values.pop("line_ids")
+    #                 invoice = self._create_invoice(invoice_values)
+    #                 invoice._onchange_invoice_line_ids()
+    #                 invoice._compute_amount()
+    #                 invoices |= invoice
+    #     return invoices
     def _action_generate_invoices(self):
         """
         Action to generate invoices based on pickings
@@ -524,30 +563,48 @@ class StockInvoiceOnshipping(models.TransientModel):
         pick_list = self._group_pickings(pickings)
         invoices = self.env["account.move"].browse()
         for pickings in pick_list:
-            moves = pickings.mapped("move_lines")
-            grouped_moves_list = self._group_moves(moves)
-            parts = self.ungroup_moves(grouped_moves_list)
-            for moves_list in parts:
-                invoice, invoice_values = self._build_invoice_values_from_pickings(
-                    pickings
-                )
-                lines = [(5, 0, {})]
-                line_values = False
-                for moves in moves_list:
-                    line_values = self._get_invoice_line_values(
-                        moves, invoice_values, invoice
-                    )
-                    if line_values:
-                        lines.append((0, 0, line_values))
-                if line_values:  # Only create the invoice if it has lines
-                    invoice_values["invoice_line_ids"] = lines
-                    invoice_values["invoice_date"] = self.invoice_date
-                    # this is needed otherwise invoice_line_ids are removed
-                    # in _move_autocomplete_invoice_lines_create
-                    # and no invoice line is created
-                    invoice_values.pop("line_ids")
-                    invoice = self._create_invoice(invoice_values)
-                    invoice._onchange_invoice_line_ids()
-                    invoice._compute_amount()
-                    invoices |= invoice
+            invoice, invoice_values = self._build_invoice_values_from_pickings(pickings)
+            lines = [(5, 0, {})]
+            line_values = False
+
+            # Process each picking separately to add section headers
+            for picking in pickings:
+                # Add section header for each picking
+                section_line = {
+                    'name': picking.name,
+                    'display_type': 'line_section',
+                    'product_id': False,
+                    'product_uom_id': False,
+                    'quantity': 0,
+                    'price_unit': 0,
+                    'account_id': False,
+                    'tax_ids': [(6, 0, [])],
+                    'move_id': invoice.id,
+                }
+                lines.append((0, 0, section_line))
+
+                # Process moves for this specific picking
+                picking_moves = picking.move_lines.filtered(lambda m: m.invoice_state == "2binvoiced")
+                grouped_moves_list = self._group_moves(picking_moves)
+                parts = self.ungroup_moves(grouped_moves_list)
+
+                for moves_list in parts:
+                    for moves in moves_list:
+                        line_values = self._get_invoice_line_values(
+                            moves, invoice_values, invoice
+                        )
+                        if line_values:
+                            lines.append((0, 0, line_values))
+
+            if line_values:  # Only create the invoice if it has lines
+                invoice_values["invoice_line_ids"] = lines
+                invoice_values["invoice_date"] = self.invoice_date
+                # this is needed otherwise invoice_line_ids are removed
+                # in _move_autocomplete_invoice_lines_create
+                # and no invoice line is created
+                invoice_values.pop("line_ids", None)
+                invoice = self._create_invoice(invoice_values)
+                invoice._onchange_invoice_line_ids()
+                invoice._compute_amount()
+                invoices |= invoice
         return invoices
