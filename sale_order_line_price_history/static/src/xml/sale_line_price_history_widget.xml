@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<templates>
+    <div t-name="sale_order_line_price_history.price_history_widget">
+        <div>
+            <a tabindex="0" class="fa fa-clock-o text-dark price_history" />
+        </div>
+    </div>
+</templates>

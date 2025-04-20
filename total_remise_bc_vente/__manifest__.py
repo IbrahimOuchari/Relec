@@ -1,0 +1,16 @@
+{
+    'name': "Total Remise dans BC Vente",
+    'author': 'BMG Tech',
+    'category': 'Sales',
+    'summary': """Affiche le montant de remise dans le récap BC Vente""",
+    'website': '',
+    'description': """ """,
+    'version': '14',
+    'depends': ['base','sale_management'],
+    'data': ['views/sale_order_view.xml'],
+    'images': ['static/description/banner.png'],
+    'license': 'AGPL-3',    
+    'installable': True,
+    'application': True,
+    'auto_install': False,
+}

@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <!-- Add quotation's header which in minimum compare to order's -->
+    <record id="view_order_form" model="ir.ui.view">
+        <field name="name">view.order.form</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form" />
+        <field name="arch" type="xml">
+            <xpath expr="/form/header" position="attributes">
+                <attribute
+                    name="invisible"
+                >1</attribute>
+            </xpath>
+            <xpath expr="/form/header" position="after">
+                <header
+                    name="quotation"
+
+                >
+                    <button
+                        name="action_confirm"
+                        attrs="{'invisible': ['|', ('so_state','!=','draft'), ('order_sequence','=',False)]}"
+                        class="oe_highlight"
+                        type="object"
+                        string="Confirmer BC"
+                    />
+                    <button
+                        name="action_convert_to_order"
+                        attrs="{'invisible': ['|', ('quotation_state','!=','done'), ('order_sequence','=',True)]}"                        class="oe_highlight"
+                        type="object"
+                        string="Convertir en Vente"
+                    />
+
+                    <button
+                        name="button_devis"
+                        attrs="{'invisible': ['|', ('quotation_state','!=','draft'), ('order_sequence','=',True)]}"
+                        class="oe_highlight"
+                        type="object"
+                        string="Confirmer Devis"
+                    />
+
+                    <button
+                        name="action_done_devis"
+                        attrs="{'invisible': ['|', ('quotation_state','!=','devis'), ('order_sequence','=',True)]}"
+                        class="oe_highlight"
+                        type="object"
+                        string="Valider la Vente"
+                    />
+                    <button
+                        name="action_cancel"
+                        attrs="{'invisible': [('quotation_state','==','draft')]}"
+                        states="draft"
+                        type="object"
+                        string="Annuler"
+                    />
+                    <field
+                        name="quotation_state"
+                        widget="statusbar"
+                        attrs="{'invisible': [('order_sequence','=',True)]}"
+                    />
+
+                <field
+                        name="so_state"
+                        widget="statusbar"
+                        attrs="{'invisible': [('order_sequence','=',False)]}"
+                    />
+
+
+
+
+
+                </header>
+
+            </xpath>
+            <field name="partner_shipping_id" position="after">
+                <field name="order_sequence" invisible="1" />
+                <!-- change pour Z2S -->
+                <field
+                    name="quote_id"
+                    attrs="{'invisible': [('order_sequence','=',False)]}"
+                    context="{'order_sequence': False}"
+                />
+                <fied
+                    name="order_id"
+                    attrs="{'invisible': [('order_sequence','=',True)]}"
+                    context="{'order_sequence': True}"
+                />
+
+                <field
+                    name="ref_client"
+                    attrs="{'invisible': [('order_sequence','=',False)]}"
+                    context="{'order_sequence': False}"
+                />
+            </field>
+
+            <xpath expr="//field[@name='validity_date']" position="attributes">
+                <attribute name="attrs">{'invisible': [('order_sequence','=',True)]}</attribute>
+            </xpath>
+
+            <xpath
+                expr="/form/sheet/notebook/page/field[@name='order_line']"
+                position="attributes"
+            >
+                <attribute name="context">{'order_sequence': order_sequence}</attribute>
+            </xpath>
+        </field>
+    </record>
+    <!-- Assign order_sequence to context -->
+    <record id="sale.action_quotations_with_onboarding" model="ir.actions.act_window">
+        <field
+            name="context"
+        >{'default_order_sequence': False, 'order_sequence': False}</field>
+        <field name="domain">[('order_sequence', '=', False)]</field>
+    </record>
+    <record id="sale.action_orders" model="ir.actions.act_window">
+        <field
+            name="context"
+        >{'default_order_sequence': True, 'order_sequence': True}</field>
+        <field name="domain">[('order_sequence', '=', True)]</field>
+    </record>
+
+    <!--    changement statequotation-->
+
+    <record id="view_quotation_tree_quotation_state" model="ir.ui.view">
+        <field name="name">quotation.tree.picking.quotation.status</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_quotation_tree" />
+        <field name="arch" type="xml">
+
+            <field name="state" position="after">
+            <field
+                    name="quotation_state"
+                    string="Status"
+                    widget="badge"
+                    decoration-info="quotation_state == 'done'"
+                    decoration-warning="quotation_state == 'devis'"
+                    optional="show"
+                    />
+            </field>
+
+             <xpath
+                expr="/tree/field[@name='state']"
+                position="attributes"
+            >
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
+        </field>
+    </record>
+
+</odoo>

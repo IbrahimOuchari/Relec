@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <report 
+            id="action_report_products"
+            string="Rapport Vente Produit"
+            model="report.rapport_produit_top_vente.report_products"
+            report_type="qweb-pdf"
+            file="rapport_produit_top_vente.report_products"
+            name="rapport_produit_top_vente.report_products"
+        />
+
+    </data>
+</odoo>

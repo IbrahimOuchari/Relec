@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+		<record id="action_report" model="ir.actions.act_window">
+			<field name="name">Rapport des Produits </field>
+			<field name="res_model">product.supplier</field>
+			<field name="view_mode">tree,form</field>
+		</record>
+		<menuitem id="menu_report" action="action_report" web_icon="fs_product_supplier_report,static/description/web_icon.png"/>
+</odoo>

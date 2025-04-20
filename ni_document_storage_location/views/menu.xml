@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <menuitem id="ni_menu_document" name="Stockage Documents" sequence="90" web_icon="ni_document_storage_location,static/description/web_icon.png"/>
+
+        <menuitem id="ni_menu_document_storage" name="Liste des Documents" parent="ni_menu_document"  action="ni_document_storage_location.ni_action_document_storage" sequence="1" />
+        <menuitem id="ni_menu_document_type" name="Type Documents" parent="ni_menu_document"  action="ni_document_storage_location.ni_action_document_type" sequence="2" />
+        <menuitem id="ni_menu_document_storage_location" name="Emplacement" parent="ni_menu_document"  action="ni_document_storage_location.ni_action_document_storage_location" sequence="3" />
+    </data>
+</odoo>

@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<odoo>
+    <data>
+        <record id="product_location_view" model="ir.ui.view">
+            <field name="name">stock.quant.tree</field>
+            <field name="model">stock.quant</field>
+            <field name="inherit_id" ref="stock.view_stock_quant_tree" />
+            <field name="arch" type="xml">
+
+                <field name="product_id" position="before">
+                    <field name="ref_product_client" string="Référence Article"/>
+                </field>
+
+                <field name="product_id" position="after">
+                    <field name="description_sale" string="Description"/>
+                </field>
+
+                 <xpath expr="//field[@name='quantity']" position="attributes">
+                    <attribute name="string">Quantité en Stock</attribute>
+                </xpath>
+
+            </field>
+        </record>
+
+
+
+    </data>
+</odoo>

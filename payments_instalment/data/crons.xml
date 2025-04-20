@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="bill_notification" model="ir.cron">
+            <field name="name">Vendor Bill notification</field>
+            <field name="model_id" ref="model_account_notification"/>
+            <field name="state">code</field>
+            <field name="type">ir.actions.server</field>
+            <field name="code">model.vendor_notification()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+        </record>
+</odoo>

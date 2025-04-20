@@ -1,0 +1,13 @@
+<odoo>
+    <record id="kw_calendar_month_by_default_calendar_event_calendar" model="ir.ui.view">
+        <field name="name">calendar.event.calendar (kw_calendar_month_by_default)</field>
+        <field name="model">calendar.event</field>
+        <field name="inherit_id" ref="calendar.view_calendar_event_calendar"/>
+        <field name="priority" eval="2"/>
+        <field name="arch" type="xml">
+            <calendar position="attributes">
+                <attribute name="mode">month</attribute>
+            </calendar>
+        </field>
+    </record>
+</odoo>

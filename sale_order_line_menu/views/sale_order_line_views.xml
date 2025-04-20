@@ -1,0 +1,107 @@
+<odoo>
+    <record model="ir.ui.view" id="view_order_line_tree_inherit">
+        <field name="name">sale.order.line.tree</field>
+        <field name="model">sale.order.line</field>
+        <field name="inherit_id" ref="sale.view_order_line_tree"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//field[@name='order_id']" position="before">
+                    <field name="ref_client_id" string="N° BC Client"/>
+            </xpath>
+            <xpath expr="//field[@name='order_id']" position="attributes">
+                    <attribute name="optional">hide</attribute>
+            </xpath>
+            <xpath expr="//field[@name='name']" position="before">
+                    <field name="ref_product_client_id" string="Référence Client	"/>
+            </xpath>
+            <xpath expr="//field[@name='salesman_id']" position="attributes">
+                    <attribute name="invisible">True</attribute>
+            </xpath>
+            <xpath expr="//field[@name='product_uom_qty']" position="attributes">
+                    <attribute name="string">Qté BC</attribute>
+            </xpath>
+            <xpath expr="//field[@name='qty_delivered']" position="after">
+                    <field name="qty_restante" string="Qté Restante	"/>
+            </xpath>
+            <xpath expr="//field[@name='qty_invoiced']" position="attributes">
+                    <attribute name="optional">hide</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='qty_to_invoice']" position="attributes">
+                    <attribute name="optional">hide</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='price_subtotal']" position="attributes">
+                    <attribute name="optional">hide</attribute>
+            </xpath>
+            <xpath expr="//field[@name='product_uom']" position="attributes">
+                <attribute name="invisible">True</attribute>
+            </xpath>
+            <xpath expr="//field[@name='route_id']" position="attributes">
+                <attribute name="invisible">True</attribute>
+            </xpath>
+
+
+            <xpath expr="//field[@name='name']" position="before">
+                    <field name="product_id"/>
+            </xpath>
+
+            <xpath expr="//field[@name='qty_restante']" position="after">
+                    <field name="qty_stock" string="Stock Disponible"/>
+            </xpath>
+
+
+
+            <xpath expr="//field[@name='price_subtotal']" position="after">
+                    <field name="status_bc" string="Livraison" optional="hide"/>
+            </xpath>
+
+
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="view_sale_order_line_pivot">
+        <field name="name">sale.order.line.pivot</field>
+        <field name="model">sale.order.line</field>
+        <field name="arch" type="xml">
+            <pivot string="État des Commandes Client non soldé" sample="1">
+                <field name="product_id" type="row" />
+                <field name="product_uom_qty" type="col" />
+                <field name="price_subtotal" type="measure" />
+            </pivot>
+        </field>
+    </record>
+    <record id="action_orders_lines" model="ir.actions.act_window">
+        <field name="name">Order Lines</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">sale.order.line</field>
+        <field name="view_mode">tree,form,pivot</field>
+        <field name="context">{'search_default_qty_stock':1}</field>
+    </record>
+
+    <menuitem
+        id="sale_order_line_menu"
+        name="État des Commandes Client non soldé"
+        action="action_orders_lines"
+        parent="sale.sale_order_menu"
+        sequence="2"
+    />
+
+
+    <record model="ir.ui.view" id="view_order_line_search_inherit">
+        <field name="name">sale.order.line.search</field>
+        <field name="model">sale.order.line</field>
+        <field name="inherit_id" ref="sale.view_sales_order_line_filter"/>
+        <field name="arch" type="xml">
+
+                <xpath expr="//filter[@name='to_invoice']" position="before">
+                    <filter string="Livraison en Cours" name="status_bc" domain="[('status_bc', '=', 'in_progress')]"/>
+                </xpath>
+                <xpath expr="//filter[@name='to_invoice']" position="before">
+                    <filter string="Stock Disponible pour Livraison" name="qty_stock" domain="[('qty_stock', '!=', 0), ('status_bc', '=', 'in_progress')]"/>
+                </xpath>
+        </field>
+    </record>
+
+
+</odoo>

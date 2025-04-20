@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_purchase_tags_tree" model="ir.ui.view">
+        <field name="name">purchase.tag.tree</field>
+	<field name="model">purchase.tag</field>
+	<field name="arch" type="xml">
+	    <tree string="Etiquettes">
+		 <field name="name"/>		
+	    </tree>
+ 	</field>		
+     </record>
+
+    <record id="view_purchase_tags_form" model="ir.ui.view">
+        <field name="name">purchase.tag.form</field>
+	<field name="model">purchase.tag</field>
+	<field name="arch" type="xml">
+	    <form string="Etiquettes">
+		<sheet>
+	            <group>
+		        <field name="name"/>
+	       	    </group>
+		</sheet>
+	    </form>
+ 	</field>		
+    </record>
+	
+    <record id="open_view_purchase_tags" model="ir.actions.act_window">
+        <field name="name">Etiquettes</field>
+	<field name="res_model">purchase.tag</field>
+	<field name="view_mode">tree,form</field>
+	<field name="view_id" ref="view_purchase_tags_tree" />
+    </record>
+    <menuitem id="menu_purchase_tags" name="Etiquettes BC Achat " parent="purchase.menu_purchase_config" action="open_view_purchase_tags" sequence="21"/>
+</odoo>
+
+
+
+

@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--    <record id="view_invoice_form_inherit" model="ir.ui.view">-->
+    <!--        <field name="name">account.move.inherit</field>-->
+    <!--        <field name="model">account.move</field>-->
+    <!--        <field name="inherit_id" ref="account.view_move_form"/>-->
+    <!--        <field name="arch" type="xml">-->
+    <!--            <page position="after">-->
+    <!--                <page string="Paiements Echelonnés">-->
+    <!--                    <group>-->
+    <!--                        <group>-->
+    <!--                            <field name="type1" string="Mode de Paiement" />-->
+    <!--                            <field name="channel" string="Canal de Notification"/>-->
+    <!--                        </group>-->
+    <!--                        <field name="notification_bill"-->
+    <!--                               context="{'default_notification': id,'default_channel':channel}"-->
+    <!--                               attrs="{'invisible':[('state' , '=', 'draft')]}">-->
+    <!--                            <tree editable="bottom">-->
+    <!--                                <field name="notification" readonly="1" invisible="1"/>-->
+
+    <!--                                <field name="number" attrs="{'column_invisible':[('parent.type1' , '!=', 'ch')]}"/>-->
+    <!--                                <field name="date"/>-->
+    <!--                                <field name="amount"/>-->
+
+
+    <!--                                <field name="paid" readonly="1"/>-->
+    <!--&lt;!&ndash;                                <field name="channel" force_save="1"/>&ndash;&gt;-->
+    <!--                            </tree>-->
+    <!--                        </field>-->
+    <!--                        <group>-->
+    <!--                            <field name="installments_total" string="Montant Total des Echéances"/>-->
+    <!--                            <field name="remaining" string="Montant Restant"/>-->
+    <!--                        </group>-->
+    <!--                        <group>-->
+    <!--                            <field name="amount_total" string="Montant Total de la Facture"/>-->
+    <!--                        </group>-->
+    <!--                    </group>-->
+    <!--                </page>-->
+    <!--            </page>-->
+    <!--        </field>-->
+    <!--    </record>-->
+
+
+    <record id="account_register_payment_inherit" model="ir.ui.view">
+        <field name="name">account.register_payment.inherit</field>
+        <field name="model">account.payment.register</field>
+        <field name="inherit_id" ref="account.view_account_payment_register_form"/>
+        <field name="arch" type="xml">
+            <field name="payment_date" position="after">
+                <field name="leng" invisible="1"/>
+                <field name="notification_bill" domain="[('notification', '=', bill),('paid', '=', False)]"
+                       options="{'no_create': True, 'no_create_edit':True}" string="Référence Paiement"
+                       attrs="{'invisible': [('leng', '=', False)]}"/>
+                <field name="bill" string="N° Facture" readonly="1"/>
+            </field>
+            <field name="amount" position="replace">
+                <field name="amount" attrs="{'readonly':[('notification_bill','!=',False)]}" force_save="1"/>
+            </field>
+            <field name="partner_bank_id" position="after">
+                <field name="payment_mode" string="Mode de Paiement" attrs="{'invisible': [('leng', '=', True)]}"/>
+
+                <field name="num_ch" attrs="{'invisible':[('payment_mode','!=','cheque')]}"/>
+                <field name="date_ch" widget="date" attrs="{'invisible':[('payment_mode','!=','cheque')]}"/>
+                <field name="num_traite" attrs="{'invisible':[('payment_mode','!=','traite')]}"/>
+                <field name="date_traite" widget="date" attrs="{'invisible':[('payment_mode','!=','traite')]}"/>
+                <field name="date_vir" widget="date" attrs="{'invisible':[('payment_mode','!=','vir')]}"/>
+
+                <!--  <field name="num" string="Numéro" attrs="{'invisible': [('leng', '=', True)]}"/>
+             -->
+            </field>
+        </field>
+    </record>
+
+    <record id="account_invoice_button_inherit" model="ir.ui.view">
+        <field name="name">account.invoice_button.inherit</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_move_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//button[@id='account_invoice_payment_btn']" position="attributes">
+                <attribute name="context">{'default_bill': id}</attribute>
+            </xpath>
+        </field>
+    </record>
+    <record id="cheque_view" model="ir.ui.view">
+        <field name="name">cheque.form.payment</field>
+        <field name="model">account.payment</field>
+        <field name="inherit_id" ref="account.view_account_payment_form"/>
+        <field name="arch" type="xml">
+            <!--  <xpath expr="//field[@name='ref']" position="after">
+                      <field name="type_pay" string="Moyens de paiement"/>
+                      <field name="num_ch" attrs="{'invisible':[('type_pay','!=','ch')]}"/>
+                  <field name="num_lc" attrs="{'invisible':[('type_pay','!=','lc')]}"/>
+              </xpath>
+              -->
+            <xpath expr="//field[@name='ref']" position="after">
+                <field name="payment_mode" string="Mode de Paiement"/>
+                <field name="num_ch" attrs="{'invisible':[('payment_mode','!=','cheque')]}"/>
+                <field name="date_ch" widget="date" attrs="{'invisible':[('payment_mode','!=','cheque')]}"/>
+                <field name="num_traite" attrs="{'invisible':[('payment_mode','!=','traite')]}"/>
+                <field name="date_traite" widget="date" attrs="{'invisible':[('payment_mode','!=','traite')]}"/>
+                <field name="date_vir" widget="date" attrs="{'invisible':[('payment_mode','!=','vir')]}"/>
+
+
+                <!--           <field name="num" attrs="{'invisible':[('payment_mode','=',False)]}"/>
+                   -->
+            </xpath>
+        </field>
+
+    </record>
+</odoo>

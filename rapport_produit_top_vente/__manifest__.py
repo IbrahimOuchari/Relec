@@ -1,0 +1,25 @@
+
+{
+    'name': "Rapport Top Vente Produit",
+    'author': 'BMG Tech',
+    'category': 'sale_management',
+    'summary': """Télécharger rapport PDF des prduits les plus vendus""",
+    'license': 'AGPL-3',
+    'website': '',
+    'description': """""",
+    'version': '14',
+    'depends': ['base','product','sale_management'],
+    'data': [
+             'security/ir.model.access.csv',
+             'wizard/top_sales_view.xml',
+             'views/top_sold_view.xml',
+             'report/selected_product_report.xml',
+             'report/selected_product_template.xml',
+             'report/selected_product_amount_report.xml',
+             'report/selected_product_amount_template.xml'],
+    'images': ['static/description/banner.png'],
+    'license': 'AGPL-3',    
+    'installable': True,
+    'application': True,
+    'auto_install': False,
+}
